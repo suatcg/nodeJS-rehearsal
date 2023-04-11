@@ -3,40 +3,20 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
 const app = express();
 
-// Middleware
-// app.use((req, res, next) => {
-// 	console.log('In the middleware');
-// 	next(); // Allows the request to continue to the next middleware in line.
-// });
-
-// app.use((req, res, next) => {
-// 	console.log('This always runs');
-// 	next();
-// });
-
-// Request Body Parser Middleware
-// this parser does not support for the json , and file types parsing , in case you need it.
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Route Middlewares
-app.use('/add-product', (req, res, next) => {
-	// console.log('In another middleware');
-	res.send(
-		'<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product</button></form>'
-	);
-});
+// Filtering with /admin , so all routes has to starart with to execute the admin routes
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
-// Limited only post requests
-app.post('/product', (req, res, next) => {
-	console.log(req.body);
-	res.redirect('/');
-});
-
-app.use('/', (req, res, next) => {
-	// console.log('In another middleware');
-	res.send('<h1>Hello from express</h1>');
+// It will work for unhandled routes
+app.use((req, res, next) => {
+	res.status(404).send('<h1>Page not found</h1>');
 });
 
 app.listen(3000, () => {
