@@ -3,22 +3,28 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const adminRoutes = require('./routes/admin');
+const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 const app = express();
+
+// Set the template engine that we use in express app by set function after install pug package into app
+// app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
+
+app.set('views', 'views'); // Set the view ('template') files will be loaded
 
 app.use(bodyParser.urlencoded({ extended: true }));
 // insert the static file out of routes
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Filtering with /admin , so all routes has to starart with to execute the admin routes
-app.use('/admin', adminRoutes);
+app.use('/admin', adminData.routes);
 app.use(shopRoutes);
 
 // It will work for unhandled routes
 app.use((req, res, next) => {
-	res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+	res.status(404).render('404', { pageTitle: 'Page not found' });
 });
 
 app.listen(3000, () => {
