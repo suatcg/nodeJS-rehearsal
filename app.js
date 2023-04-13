@@ -24,7 +24,7 @@ app.use(shopRoutes);
 
 // It will work for unhandled routes
 app.use((req, res, next) => {
-	res.status(404).render('404', { pageTitle: 'Page not found' });
+	res.status(404).render('404', { pageTitle: 'Page not found', path: '' });
 });
 
 app.listen(3000, () => {
